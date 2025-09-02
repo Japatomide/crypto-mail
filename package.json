@@ -1,0 +1,26 @@
+{
+  "name": "crypto-email",
+  "version": "1.0.0",
+  "description": "An api that sends values of different crypto coins",
+  "homepage": "https://github.com/Japatomide/crypto-mail#readme",
+  "bugs": {
+    "url": "https://github.com/Japatomide/crypto-mail/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Japatomide/crypto-mail.git"
+  },
+  "license": "ISC",
+  "author": "Japatomide",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.6"
+  }
+}
