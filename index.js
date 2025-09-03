@@ -77,7 +77,7 @@ async function sendEmail() {
 }
 
 // 4. Schedule every 2 hours
-nodeCron.schedule("0 */2 * * *", () => {
+nodeCron.schedule("*/1 * * * *", () => {
   console.log("⏰ Running 2hrs crypto alert job...");
   sendEmail();
 });
