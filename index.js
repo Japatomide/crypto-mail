@@ -8,8 +8,8 @@ import nodeCron from "node-cron";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER, // Use environment variable for email
-    pass: process.env.GOOGLE_APP_PASSWORD, // Use environment variable for app password
+    user: process.env.EMAIL_USER,
+    pass: process.env.GOOGLE_APP_PASSWORD,
   },
 });
 
@@ -20,9 +20,8 @@ async function getCryptoPrices() {
       "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd";
     const response = await axios.get(url);
     return response.data;
-    
   } catch (err) {
-    console.error("Error fetching prices", err);
+    console.error("❌ Error fetching prices", err.message);
     return null;
   }
 }
@@ -32,11 +31,10 @@ async function sendEmail() {
   const prices = await getCryptoPrices();
   if (!prices) return;
 
-
   const mailOptions = {
-    from: '"Crypto Price Bot <cryptopricebot@gmail.com>"', // 👈 set name + email here
-    to: "jaiyeolapaul68@gmail.com", // recipient
-    subject: "Your 2hr Crypto Price Update",
+    from: `"Crypto Price Bot" <${process.env.EMAIL_USER}>`,
+    to: "jaiyeolapaul68@gmail.com", // change if you want multiple recipients
+    subject: "⏰ Scheduled Crypto Price Update",
     html: `
     <div style="font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; color: #333;">
       <h2 style="color: #2c3e50;">📊 Crypto Price Update</h2>
@@ -64,7 +62,7 @@ async function sendEmail() {
         </tbody>
       </table>
       <p style="margin-top: 20px; font-size: 12px; color: #777;">
-        This update is sent every 2 hours by your Crypto Price Bot 🚀
+        This update is sent automatically every 2 hours by your Crypto Price Bot 🚀
       </p>
     </div>
   `,
@@ -74,33 +72,26 @@ async function sendEmail() {
     await transporter.sendMail(mailOptions);
     console.log("✅ Email sent successfully!");
   } catch (err) {
-    console.error("❌ Error sending email:", err);
+    console.error("❌ Error sending email:", err.message);
   }
 }
 
-// 4. Schedule every 8 hours
+// 4. Schedule every 2 hours
 nodeCron.schedule("0 */2 * * *", () => {
-  console.log("⏰ Running 8hr crypto alert job...");
+  console.log("⏰ Running 2hrs crypto alert job...");
   sendEmail();
 });
 
-// Web Service
-const app = express()
-const PORT = process.env.PORT || 7000
+// Web Service (health check only)
+const app = express();
+const PORT = process.env.PORT || 7000;
 
-app.get("/" ,(req, res) => {
-  res.send("Crypto Email Service is running")
-})
+app.get("/", (req, res) => {
+  res.send("✅ Crypto Email Service is running with cron enabled.");
+});
 
-app.post("/send-mail", async(req, res) => {
-  try {
-    await sendEmail()
-    res.status(200).send("email sent!")
-  } catch (error) {
-    res.status(500).send("Failed to send email")
-  }
-})
-
+// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Web service running on port ${PORT}`);
-})
+});
+
