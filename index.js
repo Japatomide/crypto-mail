@@ -1,6 +1,7 @@
 import dotenv from "dotenv/config";
 import nodemailer from "nodemailer";
 import axios from "axios";
+import express from "express";
 import nodeCron from "node-cron";
 
 // 1. Setup transporter
@@ -35,7 +36,7 @@ async function sendEmail() {
   const mailOptions = {
     from: '"Crypto Price Bot <cryptopricebot@gmail.com>"', // 👈 set name + email here
     to: "jaiyeolapaul68@gmail.com", // recipient
-    subject: "Your 8hr Crypto Price Update",
+    subject: "Your 2hr Crypto Price Update",
     html: `
     <div style="font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; color: #333;">
       <h2 style="color: #2c3e50;">📊 Crypto Price Update</h2>
@@ -63,7 +64,7 @@ async function sendEmail() {
         </tbody>
       </table>
       <p style="margin-top: 20px; font-size: 12px; color: #777;">
-        This update is sent every 8 hours by your Crypto Price Bot 🚀
+        This update is sent every 2 hours by your Crypto Price Bot 🚀
       </p>
     </div>
   `,
@@ -78,8 +79,28 @@ async function sendEmail() {
 }
 
 // 4. Schedule every 8 hours
-nodeCron.schedule("0 */8 * * *", () => {
+nodeCron.schedule("0 */2 * * *", () => {
   console.log("⏰ Running 8hr crypto alert job...");
   sendEmail();
 });
 
+// Web Service
+const app = express()
+const PORT = process.env.PORT || 7000
+
+app.get("/" ,(req, res) => {
+  res.send("Crypto Email Service is running")
+})
+
+app.post("/send-mail", async(req, res) => {
+  try {
+    await sendEmail()
+    res.status(200).send("email sent!")
+  } catch (error) {
+    res.status(500).send("Failed to send email")
+  }
+})
+
+app.listen(PORT, () => {
+  console.log(`🚀 Web service running on port ${PORT}`);
+})
