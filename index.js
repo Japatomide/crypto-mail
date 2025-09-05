@@ -62,7 +62,7 @@ async function sendEmail() {
         </tbody>
       </table>
       <p style="margin-top: 20px; font-size: 12px; color: #777;">
-        This update is sent automatically every 2 hours by your Crypto Price Bot 🚀
+        This update is sent automatically every 30 mins by your Crypto Price Bot 🚀
       </p>
     </div>
   `,
@@ -78,7 +78,7 @@ async function sendEmail() {
 
 // 4. Schedule every 2 hours
 nodeCron.schedule("0 */2 * * *", () => {
-  console.log("⏰ Running 2hrs crypto alert job...");
+  console.log("⏰ Running 30mins crypto alert job...");
   sendEmail();
 });
 
